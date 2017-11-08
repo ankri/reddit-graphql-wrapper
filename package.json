@@ -1,0 +1,26 @@
+{
+  "name": "reddit-graphlql-wrapper",
+  "version": "1.0.0",
+  "description": "A graphql wrapper for the reddit api",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ankri/reddit-graphlql-wrapper.git"
+  },
+  "author": "ankri",
+  "bugs": {
+    "url": "https://github.com/ankri/reddit-graphlql-wrapper/issues"
+  },
+  "homepage": "https://github.com/ankri/reddit-graphlql-wrapper#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.11.7",
+    "node-fetch": "^1.7.3",
+    "qs": "^6.5.1"
+  }
+}
