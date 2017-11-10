@@ -1,12 +1,12 @@
-const express = require("express");
-const graphqlHTTP = require("express-graphql");
-require("dotenv").config();
-const schema = require("./reddit-schema");
+const express = require('express');
+const graphqlHTTP = require('express-graphql');
+require('dotenv').config();
+const schema = require('./reddit-schema');
 
 const app = express();
 
 app.use(
-  "/graphql",
+  '/graphql',
   graphqlHTTP({
     schema,
     graphiql: true
