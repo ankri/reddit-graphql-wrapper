@@ -4,11 +4,15 @@
   "description": "A graphql wrapper for the reddit api",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ankri/reddit-graphlql-wrapper.git"
+  },
+  "lint-staged": {
+    "*.{js,json,css}": ["prettier --write", "git add"]
   },
   "author": "ankri",
   "bugs": {
@@ -22,5 +26,10 @@
     "graphql": "^0.11.7",
     "node-fetch": "^1.7.3",
     "qs": "^6.5.1"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^4.3.0",
+    "prettier": "1.8.2"
   }
 }

@@ -1,0 +1,5 @@
+-   repo: https://github.com/ankri/reddit-graphlql-wrapper
+    sha: ''  # Use the sha or tag you want to point at
+    hooks:
+    -   id: prettier
+
