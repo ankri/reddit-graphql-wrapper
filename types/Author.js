@@ -32,6 +32,7 @@ const authorType = new GraphQLObjectType({
           .then(listing => listing.data.children)
           .then(listing => listing.filter(data => data.kind === 't3'))
     }
+    // TODO add comments
   }
 });
 

@@ -1,23 +1,74 @@
 const {
   GraphQLObjectType,
   GraphQLString,
-  GraphQLNonNull,
   GraphQLInt,
+  GraphQLFloat,
+  GraphQLNonNull,
+  GraphQLList,
   GraphQLBoolean
 } = require('graphql');
 
+// ignore resolutions and variants because you always get a 401 when requesting them
+const imageType = new GraphQLObjectType({
+  name: 'Image',
+  description: 'An image',
+  fields: {
+    height: {
+      type: GraphQLInt,
+      description: 'Image height',
+      resolve: image => image.source.height
+    },
+    width: {
+      type: GraphQLInt,
+      description: 'Image width',
+      resolve: image => image.source.width
+    },
+    url: {
+      type: GraphQLString,
+      description: 'Image Url',
+      resolve: image => image.source.url
+    }
+  }
+});
+
+const previewType = new GraphQLObjectType({
+  name: 'Preview',
+  descriptiong: 'The preview object',
+  fields: {
+    isEnabled: {
+      type: GraphQLBoolean,
+      description: 'Is the preview enabled for this post?',
+      resolve: preview => preview.enabled
+    },
+    images: {
+      type: new GraphQLList(imageType),
+      description: 'The list of images',
+      resolve: preview => preview.images
+    }
+  }
+});
+
 const postFields = {
-  // comments
-  // created,
-  // created_utc,
+  // TODO add comments
+  created: {
+    type: new GraphQLNonNull(GraphQLFloat),
+    description: 'Creation date of the post in Unix Time (UTC)',
+    resolve: post => post.data.created
+  },
+  type: new GraphQLNonNull(GraphQLString),
+  createdISO: {
+    description: 'Creation date of the post in ISO8061',
+    resolve: post => {
+      const date = new Date(post.data.created_utc * 1000);
+      return date.toISOString();
+    }
+  },
   domain: {
     description:
       'the domain of this link. Self posts will be self.<subreddit> while other examples include en.wikipedia.org and s3.amazon.com',
     type: new GraphQLNonNull(GraphQLString),
     resolve: post => post.data.domain
   },
-  // downs
-  // gilded
   id: {
     description: 'The id of the post',
     type: new GraphQLNonNull(GraphQLString),
@@ -68,7 +119,11 @@ const postFields = {
     type: new GraphQLNonNull(GraphQLString),
     resolve: post => post.data.post_hint
   },
-  // preview !
+  preview: {
+    type: previewType,
+    description: 'The preview object for this post',
+    resolve: post => post.data.preview
+  },
   score: {
     description:
       'the net-score of the link. note: A submission\'s score is simply the number of upvotes minus the number of downvotes. If five users like the submission and three users don\'t it will have a score of 2. Please note that the vote numbers are not "real" numbers, they have been "fuzzed" to prevent spam bots etc. So taking the above example, if five users upvoted the submission, and three users downvote it, the upvote/downvote numbers may say 23 upvotes and 21 downvotes, or 12 upvotes, and 10 downvotes. The points score is correct, but the vote totals are "fuzzed".',
@@ -86,13 +141,37 @@ const postFields = {
     type: new GraphQLNonNull(GraphQLString),
     resolve: post => post.data.subreddit
   },
-  // thumbnail ?
+  thumbnail: {
+    description: "The post's thumbnail",
+    // Chore: use the image type instead
+    type: new GraphQLObjectType({
+      name: 'Thumbnail',
+      description: 'The thumbnail',
+      fields: {
+        url: {
+          type: GraphQLString,
+          description: 'The url of the thumbnail',
+          resolve: post => post.thumbnail
+        },
+        width: {
+          type: GraphQLInt,
+          description: 'The width of the thumbnail',
+          resolve: post => post.thumbnail_width
+        },
+        height: {
+          type: GraphQLInt,
+          description: 'The height of the thumbnail',
+          resolve: post => post.thumbnail_height
+        }
+      }
+    }),
+    resolve: post => post.data
+  },
   title: {
     description: 'The title of the post',
     type: new GraphQLNonNull(GraphQLString),
     resolve: post => post.data.title
   },
-  // ups
   url: {
     description: 'the link of this post. the permalink if this is a self-post',
     type: new GraphQLNonNull(GraphQLString),
