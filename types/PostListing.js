@@ -6,7 +6,7 @@ const {
   GraphQLList
 } = require('graphql');
 
-const postType = require('./Post');
+const { postType } = require('./Post');
 const { loadSubredditListings } = require('../reddit-api');
 
 const createPostListingsType = (description, listingType) => {
@@ -29,10 +29,12 @@ const createPostListingsType = (description, listingType) => {
     args,
     description,
     type: new GraphQLNonNull(new GraphQLList(postType)),
-    resolve: subreddit =>
-      loadSubredditListings(subreddit.data.display_name, listingType).then(
-        listing => listing.data.children
-      )
+    resolve: (subreddit, args) =>
+      loadSubredditListings(
+        subreddit.data.display_name,
+        listingType,
+        args.limit
+      ).then(listing => listing.data.children)
   };
 };
 

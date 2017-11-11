@@ -9,10 +9,15 @@ const load = (url, query) => {
 
 const loadSubreddit = name => load(`https://reddit.com/r/${name}/about.json`);
 
-const loadSubredditListings = (name, listingsType = 'hot') =>
-  load(`https://reddit.com/r/${name}/${listingsType}.json`);
+const loadSubredditListings = (name, listingsType = 'hot', limit) =>
+  load(`https://reddit.com/r/${name}/${listingsType}.json`, {
+    limit
+  });
+
+const loadUser = name => load(`https://reddit.com/user/${name}.json`);
 
 module.exports = {
   loadSubreddit,
-  loadSubredditListings
+  loadSubredditListings,
+  loadUser
 };
