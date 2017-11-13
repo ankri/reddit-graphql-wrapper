@@ -55,8 +55,8 @@ const postFields = {
     description: 'Creation date of the post in Unix Time (UTC)',
     resolve: post => post.data.created
   },
-  type: new GraphQLNonNull(GraphQLString),
   createdISO: {
+    type: new GraphQLNonNull(GraphQLString),
     description: 'Creation date of the post in ISO8061',
     resolve: post => {
       const date = new Date(post.data.created_utc * 1000);
@@ -143,7 +143,7 @@ const postFields = {
   },
   thumbnail: {
     description: "The post's thumbnail",
-    // Chore: use the image type instead
+    // Chore: use the image type / fragment instead
     type: new GraphQLObjectType({
       name: 'Thumbnail',
       description: 'The thumbnail',
