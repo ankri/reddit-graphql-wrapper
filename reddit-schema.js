@@ -22,7 +22,8 @@ const redditSchema = new GraphQLSchema({
           }
         },
         resolve: (root, { name }) => {
-          return loadSubreddit(name);
+          const subredditName = name.replace('W', '');
+          return loadSubreddit(subredditName);
         }
       }
     }
