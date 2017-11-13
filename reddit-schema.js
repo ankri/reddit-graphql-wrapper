@@ -3,26 +3,27 @@ const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLNonNull
-} = require("graphql");
+} = require('graphql');
 
-const { loadSubreddit } = require("./reddit-api");
-const subredditType = require("./types/Subreddit");
+const { loadSubreddit } = require('./reddit-api');
+const subredditType = require('./types/Subreddit');
 
 const redditSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
-    name: "RedditAPI",
-    description: "Reddit API",
+    name: 'RedditAPI',
+    description: 'Reddit API',
     fields: {
       subreddit: {
         type: subredditType,
         args: {
           name: {
             type: new GraphQLNonNull(GraphQLString),
-            description: "The name of the subreddit"
+            description: 'The name of the subreddit'
           }
         },
         resolve: (root, { name }) => {
-          return loadSubreddit(name);
+          const subredditName = name.replace('W', '');
+          return loadSubreddit(subredditName);
         }
       }
     }

@@ -18,4 +18,6 @@ app.get('/schema', (request, response) => {
   response.send(printSchema(schema));
 });
 
-app.listen(process.env.PORT);
+app.listen(process.env.PORT || 9000, () => {
+  console.log(`Listening on port ${process.env.PORT || 9000}`);
+});
