@@ -13,9 +13,9 @@ const postType = new GraphQLObjectType({
       name: 'Author',
       resolve: post => post.data.author
     },
-    swatches: {
+    imageColors: {
       type: new GraphQLObjectType({
-        name: 'Swatches',
+        name: 'ImageColors',
         description: 'Image colors according to vibrant.js',
         fields: {
           vibrant: {
@@ -23,36 +23,42 @@ const postType = new GraphQLObjectType({
             description: 'Vibrant color',
             resolve: palette => palette.Vibrant.getHex().toString()
           },
-          darkVibrant: {
+          vibrantDark: {
             type: GraphQLString,
             description: 'Dark vibrant color',
             resolve: palette => palette.DarkVibrant.getHex().toString()
           },
-          lightVibrant: {
+          vibrantLight: {
             type: GraphQLString,
             description: 'Light vibrant color',
             resolve: palette => palette.LightVibrant.getHex().toString()
-          },
-          darkMuted: {
-            type: GraphQLString,
-            description: 'Dark Muted color',
-            resolve: palette => palette.DarkMuted.getHex().toString()
-          },
-          lightMuted: {
-            type: GraphQLString,
-            description: 'Light Muted color',
-            resolve: palette => palette.LightMuted.getHex().toString()
           },
           muted: {
             type: GraphQLString,
             description: 'Muted color',
             resolve: palette => palette.Muted.getHex().toString()
+          },
+          mutedDark: {
+            type: GraphQLString,
+            description: 'Dark Muted color',
+            resolve: palette => palette.DarkMuted.getHex().toString()
+          },
+          mutedLight: {
+            type: GraphQLString,
+            description: 'Light Muted color',
+            resolve: palette => palette.LightMuted.getHex().toString()
           }
         }
       }),
-      name: 'Swatches',
+      name: 'ImageColors',
       resolve: post => {
-        const url = post.data.url;
+        // use thumbnail to find colors
+        // using vibrant on the original image can add seconds to the request
+        const url =
+          post.data.thumbnail && post.data.thumbnail.length > 0
+            ? post.data.thumbnail
+            : post.data.url;
+
         if (
           url.includes(
             '.jpg' ||
