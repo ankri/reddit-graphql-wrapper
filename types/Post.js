@@ -47,6 +47,17 @@ const postType = new GraphQLObjectType({
             type: GraphQLString,
             description: 'Light Muted color',
             resolve: palette => palette.LightMuted.getHex().toString()
+          },
+          titleText: {
+            type: GraphQLString,
+            description: 'The title color for the provided color',
+            args: {
+              color: {
+                type: GraphQLString,
+                description: 'The color'
+              }
+            },
+            resolve: (palette, args) => palette[args].getTitleColor().toString()
           }
         }
       }),
