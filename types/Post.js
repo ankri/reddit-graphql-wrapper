@@ -1,91 +1,91 @@
-const { GraphQLObjectType, GraphQLString } = require('graphql');
+const { GraphQLObjectType, GraphQLString, GraphQLBoolean } = require('graphql');
 const Vibrant = require('node-vibrant');
 
 const { authorType } = require('./Author');
+const { imageColorsType } = require('./ImageColors');
 const postFields = require('./PostFields');
+const {
+  isVideo,
+  isVideoDomain,
+  isAlbum,
+  extractMediaFromUrl
+} = require('../utils/Utils');
+
+const author = {
+  type: authorType,
+  name: 'Author',
+  resolve: post => post.data.author
+};
+
+const imageColors = {
+  type: imageColorsType,
+  name: 'ImageColors',
+  resolve: post => {
+    // use thumbnail to find colors
+    // using vibrant on the original image can add seconds to the request
+    const url =
+      post.data.thumbnail && post.data.thumbnail.length > 0
+        ? post.data.thumbnail
+        : post.data.url;
+
+    if (
+      url.includes('.jpg') ||
+      url.includes('.png') ||
+      url.includes('.jpeg') ||
+      url.endsWith('.gif')
+    ) {
+      return Vibrant.from(url).getPalette();
+    } else {
+      return null;
+    }
+  }
+};
 
 const postType = new GraphQLObjectType({
   name: 'RedditPost',
   description: 'A post made on a subreddit',
   fields: {
-    author: {
-      type: authorType,
-      name: 'Author',
-      resolve: post => post.data.author
-    },
-    imageColors: {
-      type: new GraphQLObjectType({
-        name: 'ImageColors',
-        description: 'Image colors according to vibrant.js',
-        fields: {
-          vibrant: {
-            type: GraphQLString,
-            description: 'Vibrant color',
-            resolve: palette => palette.Vibrant.getHex().toString()
-          },
-          vibrantDark: {
-            type: GraphQLString,
-            description: 'Dark vibrant color',
-            resolve: palette => palette.DarkVibrant.getHex().toString()
-          },
-          vibrantLight: {
-            type: GraphQLString,
-            description: 'Light vibrant color',
-            resolve: palette => palette.LightVibrant.getHex().toString()
-          },
-          muted: {
-            type: GraphQLString,
-            description: 'Muted color',
-            resolve: palette => palette.Muted.getHex().toString()
-          },
-          mutedDark: {
-            type: GraphQLString,
-            description: 'Dark Muted color',
-            resolve: palette => palette.DarkMuted.getHex().toString()
-          },
-          mutedLight: {
-            type: GraphQLString,
-            description: 'Light Muted color',
-            resolve: palette => palette.LightMuted.getHex().toString()
-          },
-          titleText: {
-            type: GraphQLString,
-            description: 'The title color for the provided color',
-            args: {
-              color: {
-                type: GraphQLString,
-                description: 'The color'
-              }
-            },
-            resolve: (palette, args) => palette[args].getTitleColor().toString()
-          }
-        }
-      }),
-      name: 'ImageColors',
-      resolve: post => {
-        // use thumbnail to find colors
-        // using vibrant on the original image can add seconds to the request
-        const url =
-          post.data.thumbnail && post.data.thumbnail.length > 0
-            ? post.data.thumbnail
-            : post.data.url;
-
-        if (
-          url.includes(
-            '.jpg' ||
-              url.includes('.png') ||
-              url.includes('.jpeg') ||
-              url.includes('.gif')
-          )
-        ) {
-          return Vibrant.from(url).getPalette();
-        }
-      }
-    },
+    author,
+    imageColors,
     ...postFields
   }
 });
 
+const mediaType = new GraphQLObjectType({
+  name: 'RedditMediaPost',
+  description: 'A post containing media on a subreddit',
+  fields: {
+    author,
+    imageColors,
+    ...postFields,
+    isVideo: {
+      ...postFields.isVideo,
+      resolve: post => isVideo(post.data.url) || isVideoDomain(post.data.domain)
+    },
+    isAlbum: {
+      type: GraphQLBoolean,
+      description: 'Does the post contain an url to an album?',
+      resolve: post => isAlbum(post.data.url)
+    },
+    media: {
+      type: new GraphQLObjectType({
+        name: 'RedditMediaPostMedia',
+        description: "The media of this post (if it's not an album)",
+        fields: {
+          url: {
+            type: GraphQLString,
+            description: 'The url of the media file',
+            resolve: post => extractMediaFromUrl(post.url)
+          }
+        }
+      }),
+      description: "The media of this post (if it's not an album)",
+      resolve: post => post.data
+    }
+  }
+});
+
 module.exports = {
-  postType
+  postType,
+  mediaType
 };

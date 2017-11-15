@@ -7,6 +7,7 @@ const {
 } = require('graphql');
 
 const createSubredditListings = require('./PostListing');
+const createSubredditMedia = require('./Media');
 
 const subredditType = new GraphQLObjectType({
   name: 'Subreddit',
@@ -109,6 +110,7 @@ const subredditType = new GraphQLObjectType({
       type: new GraphQLObjectType({
         name: 'SubredditListings',
         fields: {
+          // TODO add time argument
           hot: createSubredditListings('Hot listings of the subreddit', 'hot'),
           top: createSubredditListings('Top listings of the subreddit', 'top'),
           new: createSubredditListings('New listings of the subreddit', 'new'),
@@ -123,6 +125,27 @@ const subredditType = new GraphQLObjectType({
         }
       }),
       description: 'The listings for this subreddit',
+      resolve: subreddit => subreddit
+    },
+    media: {
+      type: new GraphQLObjectType({
+        name: 'SubredditMedia',
+        fields: {
+          // TODO add time argument
+          hot: createSubredditMedia('Hot media posts of the subreddit', 'hot'),
+          top: createSubredditMedia('Top media posts of the subreddit', 'top'),
+          new: createSubredditMedia('New media posts of the subreddit', 'new'),
+          rising: createSubredditMedia(
+            'Rising media posts of the subreddit',
+            'rising'
+          ),
+          controversial: createSubredditMedia(
+            'Controversial media posts of the subreddit',
+            'controversial'
+          )
+        }
+      }),
+      description: 'Only the image and video posts for this subreddit',
       resolve: subreddit => subreddit
     }
   }
