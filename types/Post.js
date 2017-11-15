@@ -8,7 +8,8 @@ const {
   isVideo,
   isVideoDomain,
   isAlbum,
-  extractMediaFromUrl
+  extractMediaFromUrl,
+  extractAlbumFromUrl
 } = require('../utils/Utils');
 
 const author = {
@@ -75,7 +76,12 @@ const mediaType = new GraphQLObjectType({
           url: {
             type: GraphQLString,
             description: 'The url of the media file',
-            resolve: post => extractMediaFromUrl(post.url)
+            resolve: post => extractMediaFromUrl(post)
+          },
+          album: {
+            type: GraphQLString,
+            description: 'The album information',
+            resolve: post => extractAlbumFromUrl(post.url)
           }
         }
       }),

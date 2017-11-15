@@ -48,19 +48,19 @@ const subredditType = new GraphQLObjectType({
         name: 'HeaderImage',
         fields: {
           url: {
-            type: new GraphQLNonNull(GraphQLString),
+            type: GraphQLString,
             description: 'Image url',
             resolve: data => data.header_img
           },
           width: {
-            type: new GraphQLNonNull(GraphQLInt),
+            type: GraphQLInt,
             description: 'Image width',
-            resolve: data => data.header_size[0]
+            resolve: data => data.header_size && data.header_size[0]
           },
           height: {
-            type: new GraphQLNonNull(GraphQLInt),
+            type: GraphQLInt,
             description: 'Image height',
-            resolve: data => data.header_size[1]
+            resolve: data => data.header_size && data.header_size[1]
           }
         }
       }),
@@ -72,19 +72,19 @@ const subredditType = new GraphQLObjectType({
         name: 'HeaderIcon',
         fields: {
           url: {
-            type: new GraphQLNonNull(GraphQLString),
+            type: GraphQLString,
             description: 'Icon url',
             resolve: data => data.icon_img
           },
           width: {
-            type: new GraphQLNonNull(GraphQLInt),
+            type: GraphQLInt,
             description: 'Icon width',
-            resolve: data => data.icon_size[0]
+            resolve: data => data.icon_size && data.icon_size[0]
           },
           height: {
-            type: new GraphQLNonNull(GraphQLInt),
+            type: GraphQLInt,
             description: 'Icon height',
-            resolve: data => data.icon_size[1]
+            resolve: data => data.icon_size && data.icon_size[1]
           }
         }
       }),
