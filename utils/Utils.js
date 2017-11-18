@@ -51,10 +51,10 @@ const extractAlbumFromUrl = url => {
       return imgurAlbumExtractor(url);
     } else {
       console.log(`Not supported: ${url}`);
-      return url;
+      return [url];
     }
   }
-  return null;
+  return [];
 };
 
 module.exports = {

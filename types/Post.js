@@ -1,4 +1,9 @@
-const { GraphQLObjectType, GraphQLString, GraphQLBoolean } = require('graphql');
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLBoolean,
+  GraphQLList
+} = require('graphql');
 const Vibrant = require('node-vibrant');
 
 const { authorType } = require('./Author');
@@ -79,7 +84,7 @@ const mediaType = new GraphQLObjectType({
             resolve: post => extractMediaFromUrl(post)
           },
           album: {
-            type: GraphQLString,
+            type: new GraphQLList(GraphQLString),
             description: 'The album information',
             resolve: post => extractAlbumFromUrl(post.url)
           }

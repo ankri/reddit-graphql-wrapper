@@ -1,30 +1,38 @@
 const fetch = require('node-fetch');
+const Gfycat = require('gfycat-sdk');
 
 let gfycat;
 
 const loadWithAPI = async gfycatId => {
-  if (!process.env.GFYCAT_CLIENT_ID || !process.env.GFYCAT.CLIENT_SECRET) {
+  console.log(`[gfycat] Loading with API: ${gfycatId}`);
+
+  if (!process.env.GFYCAT_CLIENT_ID || !process.env.GFYCAT_CLIENT_SECRET) {
     console.error('No gfycat credentials found. Go to: ...'); // TODO add gfycat api key url
     return '';
   } else {
-    if (!gfycat) {
-      gfycat = new Gfycat({
-        clientId: process.env.GFYCAT_CLIENT_ID,
-        clientSecret: process.env.GFYCAT.CLIENT_SECRET
-      });
-    }
-    const details = await gfycat.getGifDetails({
-      gfyId: gfycatId
-    });
+    try {
+      if (!gfycat) {
+        gfycat = new Gfycat({
+          clientId: process.env.GFYCAT_CLIENT_ID,
+          clientSecret: process.env.GFYCAT_CLIENT_SECRET
+        });
+      }
 
-    return details.gfyItem.mp4Url;
+      const details = await gfycat.getGifDetails({
+        gfyId: gfycatId
+      });
+
+      return details.gfyItem.mp4Url;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   }
 };
 
 const gfycatExtractor = async url => {
   if (url === url.toLowerCase()) {
     const id = url.split('/')[url.split('/').length - 1];
-    console.log(`Loading with API: ${id}`);
     return loadWithAPI(id);
   } else {
     const cleanUrl = url
@@ -41,8 +49,8 @@ const gfycatExtractor = async url => {
       } else {
         const id = url
           .replace('https://giant.gfycat.com/', '')
+          .replace('https://gfycat.com/', '')
           .replace('.mp4', '');
-        console.log(`Loading with API: ${id}`);
         return loadWithAPI(id);
       }
     } catch (e) {
