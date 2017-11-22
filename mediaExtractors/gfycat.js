@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const Gfycat = require('gfycat-sdk');
+const { getVideoFromPost } = require('./utils');
 
 let gfycat;
 
@@ -62,4 +63,43 @@ const gfycatExtractor = async url => {
   }
 };
 
-module.exports = gfycatExtractor;
+const gfycatResourceExtractor = async post => {
+  const url = post.url;
+
+  if (url === url.toLowerCase()) {
+    const id = url.split('/')[url.split('/').length - 1];
+    console.log(`[gfycat] load with API ${id}`);
+    return null;
+  } else {
+    const cleanUrl = url
+      .replace('https://gfycat.com', 'https://giant.gfycat.com')
+      .replace('https://thumbs.gfycat.com', 'https://giant.gfycat.com')
+      .replace('-size_restricted.gif', '')
+      .replace('/gifs/detail/', '')
+      .replace('.mp4', '')
+      .replace('.webm', '')
+      .concat('.mp4');
+
+    try {
+      const response = await fetch(cleanUrl);
+      if (response.status === 200) {
+        return getVideoFromPost({ ...post, url: cleanUrl });
+      } else {
+        console.log(`[gfycat] load with API ${id}`);
+        return null;
+      }
+    } catch (e) {
+      const id = url
+        .replace('https://giant.gfycat.com/', '')
+        .replace('.mp4', '');
+      console.log(`[gfycat] load with API ${id}`);
+
+      return null;
+    }
+  }
+};
+
+module.exports = {
+  gfycatExtractor,
+  gfycatResourceExtractor
+};

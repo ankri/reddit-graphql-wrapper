@@ -36,6 +36,13 @@ const authorType = new GraphQLObjectType({
   }
 });
 
+const author = {
+  type: authorType,
+  name: 'Author',
+  resolve: post => post.data.author
+};
+
 module.exports = {
-  authorType
+  authorType,
+  author
 };

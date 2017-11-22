@@ -11,7 +11,7 @@ const subredditType = require('./types/Subreddit');
 const redditSchema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'RedditAPI',
-    description: 'Reddit API',
+    description: 'Call the Reddit API via GraphQL',
     fields: {
       subreddit: {
         type: subredditType,

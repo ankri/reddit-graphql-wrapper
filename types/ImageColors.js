@@ -43,7 +43,7 @@ const imageColorsType = new GraphQLObjectType({
       description: 'The title color for the provided color',
       args: {
         color: {
-          type: GraphQLString,
+          type: GraphQLString, // TODO convert to enum
           description: 'The color'
         }
       },

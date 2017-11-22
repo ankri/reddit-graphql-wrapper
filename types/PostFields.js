@@ -9,6 +9,7 @@ const {
 } = require('graphql');
 
 // ignore resolutions and variants because you always get a 401 when requesting them
+// only load source
 const imageType = new GraphQLObjectType({
   name: 'Image',
   description: 'An image',
@@ -37,7 +38,8 @@ const previewType = new GraphQLObjectType({
   fields: {
     isEnabled: {
       type: GraphQLBoolean,
-      description: 'Is the preview enabled for this post?',
+      description:
+        'Is the preview enabled for this post? Even if the preview is disabled there can be images inside',
       resolve: preview => preview.enabled
     },
     images: {
@@ -143,7 +145,7 @@ const postFields = {
   },
   thumbnail: {
     description: "The post's thumbnail",
-    // Chore: use the image type / fragment instead
+    // Chore: use the image type instead
     type: new GraphQLObjectType({
       name: 'Thumbnail',
       description: 'The thumbnail',
