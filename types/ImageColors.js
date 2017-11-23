@@ -52,6 +52,21 @@ const imageColorsType = new GraphQLObjectType({
           ? palette[args.color].getTitleTextColor().toString()
           : '#FFF';
       }
+    },
+    bodyText: {
+      type: GraphQLString,
+      description: 'The body color for the provided color',
+      args: {
+        color: {
+          type: GraphQLString, // TODO convert to enum
+          description: 'The color'
+        }
+      },
+      resolve: (palette, args) => {
+        return palette[args.color]
+          ? palette[args.color].getBodyTextColor().toString()
+          : '#FFF';
+      }
     }
   }
 });
