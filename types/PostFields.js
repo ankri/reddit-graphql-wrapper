@@ -114,7 +114,7 @@ const postFields = {
   permalink: {
     description: 'relative URL of the permanent link for this link',
     type: new GraphQLNonNull(GraphQLString),
-    resolve: post => post.data.perma_link
+    resolve: post => post.data.permalink
   },
   postHint: {
     description: 'The post hint of the post',
