@@ -20,10 +20,27 @@ const loadWithAPI = async gfycatId => {
       }
 
       const details = await gfycat.getGifDetails({
-        gfyId: gfycatId
+        gfyId: gfycatId.replace('https://gfycat.com/', '')
       });
 
-      return details.gfyItem.mp4Url;
+      // console.log(details);
+      return getVideoFromPost({
+        id: details.gfyItem.gfyName,
+        url: details.gfyItem.mp4Url,
+        preview: {
+          images: [
+            {
+              source: {
+                height: details.gfyItem.height,
+                width: details.gfyItem.width
+              }
+            }
+          ]
+        },
+        thumbnail: details.gfyItem.thumb100PosterUrl,
+        thumbnail_width: 100,
+        thumbnail_height: 100
+      });
     } catch (e) {
       console.error(e);
       return null;
@@ -69,13 +86,13 @@ const gfycatResourceExtractor = async post => {
   if (url === url.toLowerCase()) {
     const id = url.split('/')[url.split('/').length - 1];
     console.log(`[gfycat] load with API ${id}`);
-    return null;
+    return loadWithAPI(id);
   } else {
     const cleanUrl = url
       .replace('https://gfycat.com', 'https://giant.gfycat.com')
       .replace('https://thumbs.gfycat.com', 'https://giant.gfycat.com')
       .replace('-size_restricted.gif', '')
-      .replace('/gifs/detail/', '')
+      .replace('/gifs/detail', '')
       .replace('.mp4', '')
       .replace('.webm', '')
       .concat('.mp4');
@@ -85,8 +102,11 @@ const gfycatResourceExtractor = async post => {
       if (response.status === 200) {
         return getVideoFromPost({ ...post, url: cleanUrl });
       } else {
+        const id = url
+          .replace('https://giant.gfycat.com/', '')
+          .replace('.mp4', '');
         console.log(`[gfycat] load with API ${id}`);
-        return null;
+        return loadWithAPI(id);
       }
     } catch (e) {
       const id = url
@@ -94,7 +114,7 @@ const gfycatResourceExtractor = async post => {
         .replace('.mp4', '');
       console.log(`[gfycat] load with API ${id}`);
 
-      return null;
+      return loadWithAPI(id);
     }
   }
 };
