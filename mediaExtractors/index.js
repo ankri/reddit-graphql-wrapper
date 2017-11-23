@@ -13,7 +13,11 @@ const canExtractFromPreview = preview => {
 
 const extractMediaFromPost = post => {
   const domain = post.domain.toLowerCase();
-  if (post.preview && canExtractFromPreview(post.preview)) {
+  if (
+    post.preview &&
+    canExtractFromPreview(post.preview) &&
+    !post.url.includes('.gifv')
+  ) {
     return previewExtractor(post);
   } else if (domain.includes('imgur')) {
     return imgurResourceExtractor(post);

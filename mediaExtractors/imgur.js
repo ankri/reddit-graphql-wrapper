@@ -15,15 +15,19 @@ const imgurDataToMedia = data => {
         }
       ]
     },
-    thumbnail: data.link
-      .replace('.jpg', 'b.jpg')
-      .replace('.png', 'b.png')
-      .replace('.jpeg', 'b.jpeg'),
+    thumbnail:
+      data.link &&
+      data.link
+        .replace('.jpg', 'b.jpg')
+        .replace('.png', 'b.png')
+        .replace('.jpeg', 'b.jpeg'),
     thumbnail_width: 160,
     thumbnail_height: 160
   };
 
-  if (data.type.includes('video')) {
+  if (!data || !data.type) {
+    return null;
+  } else if (data.type.includes('video')) {
     return getVideoFromPost(media);
   } else {
     return getImageFromPost(media);
@@ -93,7 +97,7 @@ const imgurExtractor = async post => {
   }
 };
 
-const imgurResourceExtractor = async post => {
+const imgurResourceExtractor = post => {
   // TODO replace with regular expression that also matches ?...
   if (
     post.url.toLowerCase().endsWith('.gifv') ||
