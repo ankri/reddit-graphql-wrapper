@@ -12,7 +12,9 @@ const loadWithAPI = async gfycatId => {
   console.log(`[gfycat] Loading with API: ${gfycatId}`);
 
   if (!process.env.GFYCAT_CLIENT_ID || !process.env.GFYCAT_CLIENT_SECRET) {
-    console.error('No gfycat credentials found. Go to: ...'); // TODO add gfycat api key url
+    console.error(
+      'No gfycat credentials found. Go to: https://developers.gfycat.com/signup/#/keys to get sign up and get a key'
+    );
     return null;
   } else {
     const fromCache = gfycatCache.get(gfycatId);

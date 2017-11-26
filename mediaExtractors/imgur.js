@@ -45,7 +45,9 @@ const imgurAlbumExtractor = async post => {
     process.env.IMGUR_CLIENT_ID.length === 0
   ) {
     console.error(
-      `Need imgur API access to access albums under url: ${post.url}`
+      `Need imgur API access to access albums under url: ${
+        post.url
+      } Go to https://apidocs.imgur.com/ to get a key`
     );
     return '';
   } else {
@@ -86,7 +88,11 @@ const imgurExtractor = async post => {
     !process.env.IMGUR_CLIENT_ID ||
     process.env.IMGUR_CLIENT_ID.length === 0
   ) {
-    console.error(`Need imgur API access to access albums for url: ${url}`);
+    console.error(
+      `Need imgur API access to access albums for url: ${
+        url
+      } Go to https://apidocs.imgur.com/ to get a key`
+    );
     return null;
   } else {
     const imgurId = url.split('/')[url.split('/').length - 1];
