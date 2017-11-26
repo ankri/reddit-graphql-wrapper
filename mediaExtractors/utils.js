@@ -4,11 +4,11 @@ const getResourceFromPost = (
 ) => {
   return {
     height:
-      preview.images.length > 0 && preview.images[0].source
+      preview && preview.images.length > 0 && preview.images[0].source
         ? preview.images[0].source.height
         : null,
     width:
-      preview.images.length > 0 && preview.images[0].source
+      preview && preview.images.length > 0 && preview.images[0].source
         ? preview.images[0].source.width
         : null,
     url,

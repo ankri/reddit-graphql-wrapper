@@ -101,7 +101,7 @@ const mediaType = new GraphQLObjectType({
       type: new GraphQLList(mediaElementType),
       description:
         'The media for this post: A list containing image(s) and/or video(s)',
-      resolve: element => {
+      resolve: async element => {
         const post = {
           ...element.data,
           // always load data via https
@@ -110,8 +110,8 @@ const mediaType = new GraphQLObjectType({
         if (isImgurAlbum(post)) {
           return extractAlbumFromPost(post);
         } else {
-          const singleMedia = extractMediaFromPost(post);
-          return singleMedia ? [singleMedia] : null;
+          const singleMedia = await extractMediaFromPost(post);
+          return singleMedia !== null ? [singleMedia] : null;
         }
       }
     }
