@@ -8,6 +8,11 @@ const {
   GraphQLBoolean
 } = require('graphql');
 const Vibrant = require('node-vibrant');
+const NodeCache = require('node-cache');
+const colorCache = new NodeCache({
+  stdTTL: process.env.CACHE_DURATION || 60 * 60 * 24
+});
+
 const { isImage } = require('../mediaExtractors/utils');
 const { imageColorsType } = require('./ImageColors');
 const postFields = require('./PostFields');
@@ -33,11 +38,18 @@ const sharedFields = {
   colors: {
     description: 'The colors of the image according to Vibrant.js',
     type: imageColorsType,
-    resolve: resource => {
+    resolve: async resource => {
       // Recommended: use thumbnail to find colors
       // using Vibrant on the original image can add seconds to the request
       if (isImage(resource.url)) {
-        return Vibrant.from(resource.url).getPalette();
+        const cachedPalette = colorCache.get(resource.url);
+        if (cachedPalette) {
+          return cachedPalette;
+        } else {
+          const palette = await Vibrant.from(resource.url).getPalette();
+          colorCache.set(resource.url, palette);
+          return palette;
+        }
       } else {
         return null;
       }
@@ -98,7 +110,8 @@ const mediaType = new GraphQLObjectType({
         if (isImgurAlbum(post)) {
           return extractAlbumFromPost(post);
         } else {
-          return [extractMediaFromPost(post)];
+          const singleMedia = extractMediaFromPost(post);
+          return singleMedia ? [singleMedia] : null;
         }
       }
     }

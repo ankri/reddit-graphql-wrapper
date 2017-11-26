@@ -1,5 +1,9 @@
 const fetch = require('node-fetch');
 const { getVideoFromPost, getImageFromPost } = require('./utils');
+const NodeCache = require('node-cache');
+const imgurCache = new NodeCache({
+  stdTTL: process.env.CACHE_DURATION || 60 * 60 * 24
+});
 
 const imgurDataToMedia = data => {
   const media = {
@@ -49,17 +53,24 @@ const imgurAlbumExtractor = async post => {
     if (!imgurId || imgurId.length === 0) {
       console.warn(`Error extracting id from ${post.url}`);
     } else {
-      const response = await fetch(
-        `https://api.imgur.com/3/album/${imgurId}/images`,
-        {
-          headers: {
-            Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`
+      console.log(`[imgur] Loading album ${imgurId}`);
+      const albumFromCache = imgurCache.get(imgurId);
+      if (albumFromCache) {
+        return albumFromCache;
+      } else {
+        const response = await fetch(
+          `https://api.imgur.com/3/album/${imgurId}/images`,
+          {
+            headers: {
+              Authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`
+            }
           }
-        }
-      );
-      const json = await response.json();
-      const album = json.data.map(image => imgurDataToMedia(image));
-      return album;
+        );
+        const json = await response.json();
+        const album = json.data.map(image => imgurDataToMedia(image));
+        imgurCache.set(imgurId, album);
+        return album;
+      }
     }
   }
 };
@@ -75,24 +86,35 @@ const imgurExtractor = async post => {
     !process.env.IMGUR_CLIENT_ID ||
     process.env.IMGUR_CLIENT_ID.length === 0
   ) {
-    console.error(`Need imgur API access to access albums under url: ${url}`);
+    console.error(`Need imgur API access to access albums for url: ${url}`);
     return null;
   } else {
-    try {
-      const imgurId = url.split('/')[url.split('/').length - 1];
-      console.log(`[imgur] Loading with API: ${imgurId}`);
+    const imgurId = url.split('/')[url.split('/').length - 1];
+    console.log(`[imgur] Loading with API: ${imgurId}`);
 
-      const response = await fetch(`https://api.imgur.com/3/image/${imgurId}`, {
-        headers: {
-          authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`
-        }
-      });
+    const imageFromCache = imgurCache.get(imgurId);
+    if (imageFromCache) {
+      return imageFromCache;
+    } else {
+      try {
+        const response = await fetch(
+          `https://api.imgur.com/3/image/${imgurId}`,
+          {
+            headers: {
+              authorization: `Client-ID ${process.env.IMGUR_CLIENT_ID}`
+            }
+          }
+        );
 
-      const json = await response.json();
-      return imgurDataToMedia(json);
-    } catch (e) {
-      console.error(e);
-      return e;
+        const json = await response.json();
+        const image = imgurDataToMedia(json);
+        imgurCache.set(imgurId, image);
+        return image;
+      } catch (e) {
+        console.error(e);
+        imgurCache.set(imgurId, null);
+        return null;
+      }
     }
   }
 };

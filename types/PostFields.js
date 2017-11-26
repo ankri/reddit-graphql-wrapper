@@ -8,7 +8,7 @@ const {
   GraphQLBoolean
 } = require('graphql');
 
-// ignore resolutions and variants because you always get a 401 when requesting them
+// ignore other fields of preview: resolutions and variants because you always get a 401 when requesting them
 // only load source
 const imageType = new GraphQLObjectType({
   name: 'Image',
