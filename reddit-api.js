@@ -9,9 +9,15 @@ const load = (url, query) => {
 
 const loadSubreddit = name => load(`https://reddit.com/r/${name}/about.json`);
 
-const loadSubredditListings = (name, listingsType = 'hot', limit) =>
+const loadSubredditListings = (
+  name,
+  listingsType = 'hot',
+  { limit, after, before }
+) =>
   load(`https://reddit.com/r/${name}/${listingsType}.json`, {
-    limit
+    limit,
+    after,
+    before
   });
 
 const loadUser = name => load(`https://reddit.com/user/${name}.json`);

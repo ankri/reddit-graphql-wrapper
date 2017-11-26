@@ -33,7 +33,7 @@ const createPostListingsType = (description, listingType) => {
       loadSubredditListings(
         subreddit.data.display_name,
         listingType,
-        args.limit
+        args
       ).then(listing => listing.data.children)
   };
 };

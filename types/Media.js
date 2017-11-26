@@ -23,7 +23,7 @@ const {
   extractMediaFromPost
 } = require('../mediaExtractors');
 
-// is used for the image/video and its thumbnail
+// is used for the image/video and their thumbnail
 const sharedFields = {
   height: {
     type: GraphQLInt,
@@ -41,6 +41,7 @@ const sharedFields = {
     resolve: async resource => {
       // Recommended: use thumbnail to find colors
       // using Vibrant on the original image can add seconds to the request
+      // Using the thumbnail usually gives pretty similar results
       if (isImage(resource.url)) {
         const cachedPalette = colorCache.get(resource.url);
         if (cachedPalette) {

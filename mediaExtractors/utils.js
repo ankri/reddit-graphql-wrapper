@@ -32,8 +32,16 @@ const getVideoFromPost = post => getResourceFromPost(post, true);
 const isImage = url =>
   new RegExp('^.*.(jpe?g|gif|png)(\\?.*)?$', 'i').test(url);
 
+const isVideo = url =>
+  new RegExp('^.*.(gifv|mp4|webm)(\\?.*)?$', 'i').test(url);
+
+const isMediaDomain = domain =>
+  new RegExp('^.*(imgur|i.redd.it|gfycat).*$', 'i').test(domain);
+
 module.exports = {
   getImageFromPost,
   getVideoFromPost,
-  isImage
+  isImage,
+  isVideo,
+  isMediaDomain
 };

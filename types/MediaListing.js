@@ -8,7 +8,7 @@ const {
 
 const { mediaType } = require('./Media');
 const { loadSubredditListings } = require('../reddit-api');
-const { isImage, isVideo, isMediaDomain } = require('../utils/Utils');
+const { isImage, isVideo, isMediaDomain } = require('../mediaExtractors/utils');
 
 const isMedia = ({ data: { domain, url } }) => {
   const isFromMediaDomain = isMediaDomain(domain);
@@ -41,7 +41,7 @@ const createMediaListingsType = (description, listingType) => {
       loadSubredditListings(
         subreddit.data.display_name,
         listingType,
-        args.limit
+        args
       ).then(listing => listing.data.children.filter(isMedia))
   };
 };
