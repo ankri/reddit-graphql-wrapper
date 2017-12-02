@@ -87,7 +87,7 @@ const imageColorsType = new GraphQLObjectType({
       description: 'The body color for the provided color',
       args: {
         color: {
-          type: vibrantColorsType, // TODO convert to enum
+          type: vibrantColorsType,
           description: 'The color'
         }
       },
