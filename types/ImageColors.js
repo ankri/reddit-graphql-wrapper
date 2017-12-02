@@ -1,4 +1,33 @@
-const { GraphQLObjectType, GraphQLString } = require('graphql');
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLEnumType
+} = require('graphql');
+
+const vibrantColorsType = new GraphQLEnumType({
+  name: 'VibrantColors',
+  description: 'Available values for the vibrant colors',
+  values: {
+    muted: {
+      value: 'Muted'
+    },
+    lightMuted: {
+      value: 'LightMuted'
+    },
+    darkMuted: {
+      value: 'DarkMuted'
+    },
+    vibrant: {
+      value: 'Vibrant'
+    },
+    lightVibrant: {
+      value: 'LightVibrant'
+    },
+    darkVibrant: {
+      value: 'DarkVibrant'
+    }
+  }
+});
 
 const imageColorsType = new GraphQLObjectType({
   name: 'ImageColors',
@@ -43,7 +72,7 @@ const imageColorsType = new GraphQLObjectType({
       description: 'The title color for the provided color',
       args: {
         color: {
-          type: GraphQLString, // TODO convert to enum
+          type: vibrantColorsType,
           description: 'The color'
         }
       },
@@ -58,7 +87,7 @@ const imageColorsType = new GraphQLObjectType({
       description: 'The body color for the provided color',
       args: {
         color: {
-          type: GraphQLString, // TODO convert to enum
+          type: vibrantColorsType, // TODO convert to enum
           description: 'The color'
         }
       },
