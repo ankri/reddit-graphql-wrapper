@@ -20,9 +20,12 @@ const subredditType = new GraphQLObjectType({
         name: 'SubredditListings',
         description: 'The listings for this subreddit',
         fields: {
-          // TODO add time argument
           hot: createSubredditListings('Hot listings of the subreddit', 'hot'),
-          top: createSubredditListings('Top listings of the subreddit', 'top'),
+          top: createSubredditListings(
+            'Top listings of the subreddit',
+            'top',
+            true
+          ),
           new: createSubredditListings('New listings of the subreddit', 'new'),
           rising: createSubredditListings(
             'Rising listings of the subreddit',
@@ -30,7 +33,8 @@ const subredditType = new GraphQLObjectType({
           ),
           controversial: createSubredditListings(
             'Controversial listings of the subreddit',
-            'controversial'
+            'controversial',
+            true
           )
         }
       }),
@@ -41,9 +45,12 @@ const subredditType = new GraphQLObjectType({
         name: 'SubredditMedia',
         description: 'Only the image and video posts for this subreddit',
         fields: {
-          // TODO add time argument
           hot: createSubredditMedia('Hot media posts of the subreddit', 'hot'),
-          top: createSubredditMedia('Top media posts of the subreddit', 'top'),
+          top: createSubredditMedia(
+            'Top media posts of the subreddit',
+            'top',
+            true
+          ),
           new: createSubredditMedia('New media posts of the subreddit', 'new'),
           rising: createSubredditMedia(
             'Rising media posts of the subreddit',
@@ -51,7 +58,8 @@ const subredditType = new GraphQLObjectType({
           ),
           controversial: createSubredditMedia(
             'Controversial media posts of the subreddit',
-            'controversial'
+            'controversial',
+            true
           )
         }
       }),

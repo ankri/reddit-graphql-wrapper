@@ -8,8 +8,13 @@ const {
 
 const { postType } = require('./Post');
 const { loadSubredditListings } = require('../reddit-api');
+const { timeIntervalType } = require('./TimeIntervalType');
 
-const createPostListingsType = (description, listingType) => {
+const createPostListingsType = (
+  description,
+  listingType,
+  hasTimeInterval = false
+) => {
   const args = {
     after: {
       description: 'Load posts after this fullname id',
@@ -22,7 +27,14 @@ const createPostListingsType = (description, listingType) => {
     limit: {
       description: 'Load this many posts',
       type: GraphQLInt
-    }
+    },
+    ...(hasTimeInterval && {
+      timeInterval: {
+        description:
+          'Time interval for listings depending on a selected time interval',
+        type: timeIntervalType
+      }
+    })
   };
 
   return {
