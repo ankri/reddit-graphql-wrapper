@@ -8,6 +8,8 @@ const {
   GraphQLBoolean
 } = require('graphql');
 
+const { commentType } = require('./Comment');
+
 // ignore other fields of preview: resolutions and variants because you always get a 401 when requesting them
 // only load source
 const imageType = new GraphQLObjectType({
@@ -51,7 +53,6 @@ const previewType = new GraphQLObjectType({
 });
 
 const postFields = {
-  // TODO add comments
   created: {
     type: new GraphQLNonNull(GraphQLFloat),
     description: 'Creation date of the post in Unix Time (UTC)',
@@ -114,7 +115,7 @@ const postFields = {
   permalink: {
     description: 'relative URL of the permanent link for this link',
     type: new GraphQLNonNull(GraphQLString),
-    resolve: post => post.data.permalink
+    resolve: post => `https://reddit.com${post.data.permalink}`
   },
   postHint: {
     description: 'The post hint of the post',
