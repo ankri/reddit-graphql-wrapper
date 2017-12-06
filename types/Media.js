@@ -22,6 +22,7 @@ const {
   extractAlbumFromPost,
   extractMediaFromPost
 } = require('../mediaExtractors');
+const { linkScraper } = require('./LinkScraper');
 
 // is used for the image/video and their thumbnail
 const sharedFields = {
@@ -47,9 +48,13 @@ const sharedFields = {
         if (cachedPalette) {
           return cachedPalette;
         } else {
-          const palette = await Vibrant.from(resource.url).getPalette();
-          colorCache.set(resource.url, palette);
-          return palette;
+          try {
+            const palette = await Vibrant.from(resource.url).getPalette();
+            colorCache.set(resource.url, palette);
+            return palette;
+          } catch (e) {
+            return null;
+          }
         }
       } else {
         return null;
@@ -98,6 +103,7 @@ const mediaType = new GraphQLObjectType({
   fields: {
     author,
     ...postFields,
+    urlsInComments: linkScraper,
     media: {
       type: new GraphQLList(mediaElementType),
       description:

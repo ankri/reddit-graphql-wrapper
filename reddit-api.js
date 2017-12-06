@@ -3,8 +3,6 @@ const Qs = require('qs');
 
 const load = (url, query) => {
   const queryString = query ? `?${Qs.stringify(query)}` : '';
-  console.log(`${url}${queryString}`);
-
   return fetch(`${url}${queryString}`).then(response => response.json());
 };
 
@@ -24,12 +22,22 @@ const loadSubredditListings = (
 
 const loadUser = name => load(`https://reddit.com/user/${name}.json`);
 
-const loadComments = (subredditName, linkId, { depth, limit, sort, comment }) =>
+const loadUserPosts = (name, { limit, after }) =>
+  load(`https://reddit.com/user/${name}/submitted.json`, { limit, after });
+const loadUserComments = (name, { limit, after }) =>
+  load(`https://reddit.com/user/${name}/comments.json`, { limit, after });
+
+const loadComments = (
+  subredditName,
+  linkId,
+  { depth, limit, sort, comment, threaded }
+) =>
   load(`https://reddit.com/r/${subredditName}/comments/${linkId}.json`, {
     depth,
     limit,
     sort,
-    comment
+    comment,
+    threaded
   });
 
 const loadRandomSubreddit = async (isNsfw = false) => {
@@ -43,6 +51,8 @@ module.exports = {
   loadSubreddit,
   loadSubredditListings,
   loadUser,
+  loadUserPosts,
+  loadUserComments,
   loadRandomSubreddit,
   loadComments
 };
