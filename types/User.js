@@ -24,6 +24,7 @@ const userType = new GraphQLObjectType({
   name: 'User',
   description: 'Comments, posts and media posted by a reddit user',
   fields: {
+    // TODO add some basic user about fields like name, karma etc.
     comments: {
       type: new GraphQLList(commentType),
       description: 'The comments made by the user',
