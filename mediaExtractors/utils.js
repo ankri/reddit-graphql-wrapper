@@ -32,6 +32,9 @@ const getVideoFromPost = post => getResourceFromPost(post, true);
 const isImage = url =>
   new RegExp('^.*.(jpe?g|gif|png)(\\?.*)?$', 'i').test(url);
 
+// starts with any character
+// contains .gifv, .mp4 or .webm
+// ends there or ends with ? and any characters
 const isVideo = url =>
   new RegExp('^.*.(gifv|mp4|webm)(\\?.*)?$', 'i').test(url);
 

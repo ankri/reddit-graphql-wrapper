@@ -62,38 +62,9 @@ const loadWithAPI = async gfycatId => {
   }
 };
 
-const gfycatExtractor = async url => {
-  if (url === url.toLowerCase()) {
-    const id = url.split('/')[url.split('/').length - 1];
-    return loadWithAPI(id);
-  } else {
-    const cleanUrl = url
-      .replace('https://gfycat.com', 'https://giant.gfycat.com')
-      .replace('/gifs/detail/', '')
-      .replace('.mp4', '')
-      .replace('.webm', '')
-      .concat('.mp4');
-
-    try {
-      const response = await fetch(cleanUrl);
-      if (response.status === 200) {
-        return cleanUrl;
-      } else {
-        const id = url
-          .replace('https://giant.gfycat.com/', '')
-          .replace('https://gfycat.com/', '')
-          .replace('.mp4', '');
-        return loadWithAPI(id);
-      }
-    } catch (e) {
-      const id = url
-        .replace('https://giant.gfycat.com/', '')
-        .replace('.mp4', '');
-      return loadWithAPI(id);
-    }
-  }
-};
-
+//
+// try to load the gfycat without the need to call the api
+//
 const gfycatResourceExtractor = async post => {
   const url = post.url;
 
@@ -115,6 +86,8 @@ const gfycatResourceExtractor = async post => {
       .concat('.mp4');
 
     try {
+      // sometimes the clean gfycat url is restricted. let the server do a quick check
+      // TODO use OPTIONS instead of get?
       const response = await fetch(cleanUrl);
       if (response.status === 200) {
         return getVideoFromPost({ ...post, url: cleanUrl });
@@ -135,6 +108,5 @@ const gfycatResourceExtractor = async post => {
 };
 
 module.exports = {
-  gfycatExtractor,
   gfycatResourceExtractor
 };

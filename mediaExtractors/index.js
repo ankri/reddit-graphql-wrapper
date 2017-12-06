@@ -7,7 +7,7 @@ const canExtractFromPreview = preview => {
   return (
     preview.images &&
     preview.images.length > 0 &&
-    !preview.images[0].source.url.includes('.gif')
+    !preview.images[0].source.url.includes('.gif') // we cannot access reddit gifs
   );
 };
 
@@ -16,7 +16,7 @@ const extractMediaFromPost = post => {
   if (
     post.preview &&
     canExtractFromPreview(post.preview) &&
-    !post.url.includes('.gifv')
+    !post.url.includes('.gif')
   ) {
     return previewExtractor(post);
   } else if (domain.includes('imgur')) {

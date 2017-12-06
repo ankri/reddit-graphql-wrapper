@@ -38,7 +38,14 @@ const imgurDataToMedia = data => {
   }
 };
 
-// https://api.imgur.com/3/album/{id}/images
+// important: albums can only be accessed with a key
+//
+// strategy:
+// 1. check if client id is available
+// 2. extract album id from rl
+// 3. check if album is already cached
+// 4. load from imgur and save in cache
+//
 const imgurAlbumExtractor = async post => {
   if (
     !process.env.IMGUR_CLIENT_ID ||
@@ -77,7 +84,16 @@ const imgurAlbumExtractor = async post => {
   }
 };
 
+// is used when image / video could not be accessed without imgur API
+//
+// 1. clean url
+// 2. check if client id is available
+// 3. extract image id from rl
+// 4. check if image is already cached
+// 5. load from imgur and save in cache
+//
 const imgurExtractor = async post => {
+  // TODO replace id extraction with a regexp
   const url = post.url
     .replace('.gif', '')
     .replace('.png', '')
@@ -89,7 +105,7 @@ const imgurExtractor = async post => {
     process.env.IMGUR_CLIENT_ID.length === 0
   ) {
     console.error(
-      `Need imgur API access to access albums for url: ${
+      `Need imgur API access to access images for url: ${
         url
       } Go to https://apidocs.imgur.com/ to get a key`
     );
@@ -131,7 +147,8 @@ const imgurResourceExtractor = post => {
     post.url.toLowerCase().endsWith('.gifv') ||
     post.url.toLowerCase().endsWith('.gif') // TODO does not seem to work -> load gif via api
   ) {
-    // no need to call the api to get the video
+    // filetype is gif(v) -> we know it's a video
+    // no need to call the api
     return getVideoFromPost({
       ...post,
       url: post.url.replace('gifv', 'mp4').replace('gif', 'mp4')
