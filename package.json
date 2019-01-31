@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/ankri/reddit-graphlql-wrapper#readme",
   "dependencies": {
-    "dotenv": "^4.0.0",
+    "dotenv": "^6.0.0",
     "express": "^4.16.2",
     "express-graphql": "^0.7.0",
     "gfycat-sdk": "^1.4.10",
