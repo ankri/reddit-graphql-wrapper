@@ -24,8 +24,14 @@ const redditSchema = new GraphQLSchema({
           }
         },
         resolve: (root, { name }) => {
-          const subredditName = name.replace(/\W/, '');
-          return loadSubreddit(subredditName);
+          if (name.includes('+')) {
+            const subreddits = name.split('+');
+            const subredditName = subreddits[0].replace(/[\W^+]/, '');
+            return loadSubreddit(subredditName);
+          } else {
+            const subredditName = name.replace(/[^A-Za-z0-9_+]/, '');
+            return loadSubreddit(subredditName);
+          }
         }
       },
       user: {

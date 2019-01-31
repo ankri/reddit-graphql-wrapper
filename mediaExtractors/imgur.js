@@ -129,7 +129,7 @@ const imgurExtractor = async post => {
         );
 
         const json = await response.json();
-        const image = imgurDataToMedia(json);
+        const image = imgurDataToMedia(json.data);
         imgurCache.set(imgurId, image);
         return image;
       } catch (e) {

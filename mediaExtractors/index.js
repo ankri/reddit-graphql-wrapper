@@ -4,11 +4,11 @@ const { imgurResourceExtractor, imgurAlbumExtractor } = require('./imgur');
 const { gfycatResourceExtractor } = require('./gfycat');
 
 const canExtractFromPreview = preview => {
-  return (
+  return false; /*(
     preview.images &&
     preview.images.length > 0 &&
     !preview.images[0].source.url.includes('.gif') // we cannot access reddit gifs
-  );
+  );*/
 };
 
 const extractMediaFromPost = post => {
