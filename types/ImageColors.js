@@ -78,7 +78,7 @@ const imageColorsType = new GraphQLObjectType({
       },
       resolve: (palette, args) => {
         return palette[args.color]
-          ? palette[args.color].getTitleTextColor().toString()
+          ? palette[args.color].getTitleTextColor()
           : '#FFF';
       }
     },
@@ -93,7 +93,7 @@ const imageColorsType = new GraphQLObjectType({
       },
       resolve: (palette, args) => {
         return palette[args.color]
-          ? palette[args.color].getBodyTextColor().toString()
+          ? palette[args.color].getBodyTextColor()
           : '#FFF';
       }
     }
