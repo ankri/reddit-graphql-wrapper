@@ -34,7 +34,7 @@
     "qs": "^6.9.0"
   },
   "devDependencies": {
-    "husky": "3.0.5",
+    "husky": "3.0.7",
     "lint-staged": "9.4.0",
     "nodemon": "1.19.2",
     "prettier": "1.18.2"
