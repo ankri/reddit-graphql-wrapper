@@ -31,7 +31,7 @@
     "node-cache": "^5.0.2",
     "node-fetch": "^2.6.0",
     "node-vibrant": "^3.1.5",
-    "qs": "^6.9.0"
+    "qs": "^6.9.1"
   },
   "devDependencies": {
     "husky": "3.1.0",
